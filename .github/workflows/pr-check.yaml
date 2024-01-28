@@ -9,9 +9,10 @@ jobs:
   tests:
     name: setup the environment
     runs-on: ubuntu-latest
+
     services:
       postgres:
-        image: postgres:12-alpime
+        image: postgres:12-alpine
         env:
           POSTGRES_USER: root
           POSTGRES_PASSWORD: secret
