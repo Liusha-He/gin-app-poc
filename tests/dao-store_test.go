@@ -2,6 +2,7 @@ package tests
 
 import (
 	"context"
+	"fmt"
 	"simple-bank/src/dao"
 	"testing"
 
@@ -9,6 +10,7 @@ import (
 )
 
 func TestTransferTx(t *testing.T) {
+	// existed := make(map[int]bool)
 	store := dao.NewStore(testDB)
 
 	account1, _ := testQueries.CreateAccount(context.Background(),
@@ -24,6 +26,11 @@ func TestTransferTx(t *testing.T) {
 			Balance:  10000.00,
 			Currency: "GBP",
 		},
+	)
+	fmt.Printf(
+		"Before update, liusha's balance is £%.2f : Degere's balance is £%.2f\n",
+		account1.Balance,
+		account2.Balance,
 	)
 
 	n := 5
@@ -82,8 +89,22 @@ func TestTransferTx(t *testing.T) {
 
 		_, err = store.GetEntry(context.Background(), toEntry.ID)
 		require.NoError(t, err)
-
-		// TODO check accounts' balance
-
 	}
+
+	// check the final updated accounts
+	updatedAccount1, err := testQueries.GetAccount(context.Background(), account1.ID)
+	require.NoError(t, err)
+
+	updatedAccount2, err := testQueries.GetAccount(context.Background(), account2.ID)
+	require.NoError(t, err)
+
+	diff := amount * float64(n)
+	require.Equal(t, account1.Balance-diff, updatedAccount1.Balance)
+	require.Equal(t, account2.Balance+diff, updatedAccount2.Balance)
+
+	fmt.Printf(
+		"After transaction liusha's balance is £%.2f and Degere's balance is £%.2f",
+		updatedAccount1.Balance,
+		updatedAccount2.Balance,
+	)
 }
