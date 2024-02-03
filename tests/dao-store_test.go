@@ -43,47 +43,47 @@ func TestTransferTx(t *testing.T) {
 			errs <- err
 			results <- result
 		}()
+	}
 
-		// check results
-		for i := 0; i < n; i++ {
-			err := <-errs
-			require.NoError(t, err)
+	// check results
+	for i := 0; i < n; i++ {
+		err := <-errs
+		require.NoError(t, err)
 
-			result := <-results
-			require.NotEmpty(t, result)
+		result := <-results
+		require.NotEmpty(t, result)
 
-			transfer := result.Transfer
-			require.NotEmpty(t, transfer)
-			require.Equal(t, transfer.FromAccountID, account1.ID)
-			require.Equal(t, transfer.ToAccountID, account2.ID)
-			require.Equal(t, transfer.Amount, amount)
-			require.NotZero(t, transfer.ID)
-			require.NotZero(t, transfer.CreatedAt)
+		transfer := result.Transfer
+		require.NotEmpty(t, transfer)
+		require.Equal(t, transfer.FromAccountID, account1.ID)
+		require.Equal(t, transfer.ToAccountID, account2.ID)
+		require.Equal(t, transfer.Amount, amount)
+		require.NotZero(t, transfer.ID)
+		require.NotZero(t, transfer.CreatedAt)
 
-			_, err = store.GetTransfer(context.Background(), transfer.ID)
-			require.NoError(t, err)
+		_, err = store.GetTransfer(context.Background(), transfer.ID)
+		require.NoError(t, err)
 
-			// check entry
-			fromEntry := result.FromEntry
-			require.NotEmpty(t, fromEntry)
-			require.Equal(t, fromEntry.AccountID, account1.ID)
-			require.NotZero(t, fromEntry.CreatedAt)
-			require.Equal(t, -amount, fromEntry.Amount)
+		// check entry
+		fromEntry := result.FromEntry
+		require.NotEmpty(t, fromEntry)
+		require.Equal(t, fromEntry.AccountID, account1.ID)
+		require.NotZero(t, fromEntry.CreatedAt)
+		require.Equal(t, -amount, fromEntry.Amount)
 
-			_, err = store.GetEntry(context.Background(), fromEntry.ID)
-			require.NoError(t, err)
+		_, err = store.GetEntry(context.Background(), fromEntry.ID)
+		require.NoError(t, err)
 
-			toEntry := result.ToEntry
-			require.NotEmpty(t, toEntry)
-			require.Equal(t, toEntry.AccountID, account2.ID)
-			require.NotZero(t, toEntry.CreatedAt)
-			require.Equal(t, amount, toEntry.Amount)
+		toEntry := result.ToEntry
+		require.NotEmpty(t, toEntry)
+		require.Equal(t, toEntry.AccountID, account2.ID)
+		require.NotZero(t, toEntry.CreatedAt)
+		require.Equal(t, amount, toEntry.Amount)
 
-			_, err = store.GetEntry(context.Background(), toEntry.ID)
-			require.NoError(t, err)
+		_, err = store.GetEntry(context.Background(), toEntry.ID)
+		require.NoError(t, err)
 
-			// TODO check accounts' balance
+		// TODO check accounts' balance
 
-		}
 	}
 }
