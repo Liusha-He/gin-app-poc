@@ -1,3 +1,19 @@
+definitions:
+  api.createAccountRequest:
+    properties:
+      currency:
+        enum:
+        - USD
+        - EUR
+        - GBP
+        - CNY
+        type: string
+      owner:
+        type: string
+    required:
+    - currency
+    - owner
+    type: object
 info:
   contact: {}
   description: A Golang and gin API template
@@ -6,9 +22,14 @@ info:
 paths:
   /api/v1/accounts:
     post:
-      consumes:
-      - application/json
-      description: create an account
+      description: Takes an account json and store in DB, Returned saved json.
+      parameters:
+      - description: account json
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/api.createAccountRequest'
       produces:
       - application/json
       responses:

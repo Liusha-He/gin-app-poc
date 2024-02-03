@@ -17,10 +17,7 @@ const docTemplate = `{
     "paths": {
         "/api/v1/accounts": {
             "post": {
-                "description": "create an account",
-                "consumes": [
-                    "application/json"
-                ],
+                "description": "Takes an account json and store in DB, Returned saved json.",
                 "produces": [
                     "application/json"
                 ],
@@ -28,10 +25,44 @@ const docTemplate = `{
                     "accounts"
                 ],
                 "summary": "create account",
+                "parameters": [
+                    {
+                        "description": "account json",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.createAccountRequest"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK"
                     }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "api.createAccountRequest": {
+            "type": "object",
+            "required": [
+                "currency",
+                "owner"
+            ],
+            "properties": {
+                "currency": {
+                    "type": "string",
+                    "enum": [
+                        "USD",
+                        "EUR",
+                        "GBP",
+                        "CNY"
+                    ]
+                },
+                "owner": {
+                    "type": "string"
                 }
             }
         }

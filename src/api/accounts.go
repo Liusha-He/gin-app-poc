@@ -12,15 +12,15 @@ type createAccountRequest struct {
 	Currency string `json:"currency" binding:"required,oneof=USD EUR GBP CNY"`
 }
 
-// Create Account godoc
-// @Summary create account
-// @Schemes
-// @Description create an account
-// @Tags accounts
-// @Accept json
-// @Produce json
-// @Success 200
-// @Router /api/v1/accounts [post]
+// Create Account 	godoc
+// @Summary 		create account
+// @Schemes 		http
+// @Description 	Takes an account json and store in DB, Returned saved json.
+// @Tags 			accounts
+// @Produce 		json
+// @Param 			account  body	createAccountRequest true  "account json"
+// @Success 		200
+// @Router 			/api/v1/accounts [post]
 func (server *Server) createAccount(ctx *gin.Context) {
 	var req createAccountRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
