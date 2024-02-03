@@ -1,0 +1,20 @@
+info:
+  contact: {}
+  description: A Golang and gin API template
+  title: simple bank API
+  version: "1.0"
+paths:
+  /api/v1/accounts:
+    post:
+      consumes:
+      - application/json
+      description: create an account
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: create account
+      tags:
+      - accounts
+swagger: "2.0"
