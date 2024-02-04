@@ -1,0 +1,89 @@
+definitions:
+  api.createAccountRequest:
+    properties:
+      currency:
+        enum:
+        - USD
+        - EUR
+        - GBP
+        - CNY
+        type: string
+      owner:
+        type: string
+    required:
+    - currency
+    - owner
+    type: object
+  dao.Account:
+    properties:
+      balance:
+        type: number
+      created_at:
+        type: string
+      currency:
+        type: string
+      id:
+        type: integer
+      owner:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: A Golang and gin API template
+  title: simple bank API
+  version: "1.0"
+paths:
+  /api/v1/accounts:
+    get:
+      description: Responds with the list of accounts
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dao.Account'
+            type: array
+      summary: Get account list
+      tags:
+      - accounts
+    post:
+      description: Takes an account json and store in DB, Returned saved json.
+      parameters:
+      - description: account json
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/api.createAccountRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dao.Account'
+      summary: create account
+      tags:
+      - accounts
+  /api/v1/accounts/{id}:
+    get:
+      description: Takes an account id with path, Returned account info json.
+      parameters:
+      - description: search by id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dao.Account'
+      summary: get account by id
+      tags:
+      - accounts
+swagger: "2.0"

@@ -31,4 +31,10 @@ test:
 clean:
 	docker stop postgres12
 
-.PHONY: postgres createdb dropdb migrate-up migrate-down sqlc test clean
+docs: 
+	swag init --dir ./src/
+
+server:
+	go run src/main.go
+
+.PHONY: postgres createdb dropdb migrate-up migrate-down sqlc test clean docs
