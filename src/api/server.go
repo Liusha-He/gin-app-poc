@@ -12,24 +12,25 @@ import (
 
 type Server struct {
 	store  dao.Store
-	router *gin.Engine
+	Router *gin.Engine
 }
 
-func NewServer(store *dao.Store) *Server {
-	server := &Server{store: *store}
+// NewServer will create the http Server
+func NewServer(store dao.Store) *Server {
+	server := &Server{store: store}
+
 	router := gin.Default()
 	docs.SwaggerInfo.BasePath = "/"
 
-	router.GET(
-		"/swagger/*any",
-		ginSwagger.WrapHandler(swaggerFiles.Handler),
-	)
+	// swager router
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	v1 := router.Group("/api/v1")
 
+	// Register all routers below
 	server.AccountsRouters(v1)
 
-	server.router = router
+	server.Router = router
 	return server
 }
 
@@ -38,5 +39,5 @@ func errorResponse(err error) gin.H {
 }
 
 func (server *Server) Start(address string) error {
-	return server.router.Run(address)
+	return server.Router.Run(address)
 }
