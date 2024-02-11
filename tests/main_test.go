@@ -7,6 +7,7 @@ import (
 	"simple-bank/src/dao"
 	"testing"
 
+	"github.com/gin-gonic/gin"
 	_ "github.com/lib/pq"
 )
 
@@ -21,6 +22,7 @@ var (
 )
 
 func TestMain(m *testing.M) {
+	gin.SetMode(gin.TestMode)
 	var err error
 
 	testDB, err = sql.Open(dbDriver, dbSource)

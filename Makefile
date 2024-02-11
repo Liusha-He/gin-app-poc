@@ -37,4 +37,7 @@ docs:
 server:
 	go run src/main.go
 
-.PHONY: postgres createdb dropdb migrate-up migrate-down sqlc test clean docs
+mock:
+	mockgen -package mockdb -destination tests/mock/store.go simple-bank/src/dao Store
+
+.PHONY: postgres createdb dropdb migrate-up migrate-down sqlc test clean docs mock
