@@ -6,6 +6,8 @@ import (
 	docs "simple-bank/docs"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
+	"github.com/go-playground/validator/v10"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -18,8 +20,12 @@ type Server struct {
 // NewServer will create the http Server
 func NewServer(store dao.Store) *Server {
 	server := &Server{store: store}
-
 	router := gin.Default()
+
+	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
+		v.RegisterValidation("currency", validateCurrency)
+	}
+
 	docs.SwaggerInfo.BasePath = "/"
 
 	// swager router
@@ -29,6 +35,7 @@ func NewServer(store dao.Store) *Server {
 
 	// Register all routers below
 	server.AccountsRouters(v1)
+	server.TransfersRouters(v1)
 
 	server.Router = router
 	return server

@@ -95,6 +95,37 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/api/v1/transfers": {
+            "post": {
+                "description": "Takes an transfer json and store in DB, Returned saved json.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "transfers"
+                ],
+                "summary": "create transfer",
+                "parameters": [
+                    {
+                        "description": "transfer json",
+                        "name": "transfer",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.transferRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dao.Transfer"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -119,6 +150,32 @@ const docTemplate = `{
                 }
             }
         },
+        "api.transferRequest": {
+            "type": "object",
+            "required": [
+                "amount",
+                "currency",
+                "from_account_id",
+                "to_account_id"
+            ],
+            "properties": {
+                "amount": {
+                    "type": "number",
+                    "minimum": 1
+                },
+                "currency": {
+                    "type": "string"
+                },
+                "from_account_id": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "to_account_id": {
+                    "type": "integer",
+                    "minimum": 1
+                }
+            }
+        },
         "dao.Account": {
             "type": "object",
             "properties": {
@@ -136,6 +193,26 @@ const docTemplate = `{
                 },
                 "owner": {
                     "type": "string"
+                }
+            }
+        },
+        "dao.Transfer": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "from_account_id": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "to_account_id": {
+                    "type": "integer"
                 }
             }
         }
