@@ -14,6 +14,25 @@ definitions:
     - currency
     - owner
     type: object
+  api.transferRequest:
+    properties:
+      amount:
+        minimum: 1
+        type: number
+      currency:
+        type: string
+      from_account_id:
+        minimum: 1
+        type: integer
+      to_account_id:
+        minimum: 1
+        type: integer
+    required:
+    - amount
+    - currency
+    - from_account_id
+    - to_account_id
+    type: object
   dao.Account:
     properties:
       balance:
@@ -26,6 +45,19 @@ definitions:
         type: integer
       owner:
         type: string
+    type: object
+  dao.Transfer:
+    properties:
+      amount:
+        type: number
+      created_at:
+        type: string
+      from_account_id:
+        type: integer
+      id:
+        type: integer
+      to_account_id:
+        type: integer
     type: object
 info:
   contact: {}
@@ -86,4 +118,24 @@ paths:
       summary: get account by id
       tags:
       - accounts
+  /api/v1/transfers:
+    post:
+      description: Takes an transfer json and store in DB, Returned saved json.
+      parameters:
+      - description: transfer json
+        in: body
+        name: transfer
+        required: true
+        schema:
+          $ref: '#/definitions/api.transferRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dao.Transfer'
+      summary: create transfer
+      tags:
+      - transfers
 swagger: "2.0"

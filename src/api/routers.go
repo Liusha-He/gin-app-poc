@@ -7,3 +7,7 @@ func (server *Server) AccountsRouters(r *gin.RouterGroup) {
 	r.GET("/accounts/:id", server.getAccount)
 	r.GET("/accounts", server.listAccounts)
 }
+
+func (server *Server) TransfersRouters(r *gin.RouterGroup) {
+	r.POST("/transfers", server.createTransfer)
+}
