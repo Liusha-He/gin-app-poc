@@ -44,7 +44,7 @@ clean:
 docs: 
 	swag init --dir ./src/
 
-server:
+server: docs
 	go run src/main.go
 
 mock:

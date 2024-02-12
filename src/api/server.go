@@ -34,6 +34,7 @@ func NewServer(store dao.Store) *Server {
 	v1 := router.Group("/api/v1")
 
 	// Register all routers below
+	server.UsersRouter(v1)
 	server.AccountsRouters(v1)
 	server.TransfersRouters(v1)
 

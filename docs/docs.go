@@ -126,6 +126,37 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/api/v1/users": {
+            "post": {
+                "description": "Takes an user json and store in DB, Returned saved json.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "create user",
+                "parameters": [
+                    {
+                        "description": "user json",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.createUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dao.User"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -146,6 +177,30 @@ const docTemplate = `{
                     ]
                 },
                 "owner": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.createUserRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "full_name",
+                "password",
+                "username"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "full_name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 6
+                },
+                "username": {
                     "type": "string"
                 }
             }
@@ -213,6 +268,29 @@ const docTemplate = `{
                 },
                 "to_account_id": {
                     "type": "integer"
+                }
+            }
+        },
+        "dao.User": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "full_name": {
+                    "type": "string"
+                },
+                "hashed_password": {
+                    "type": "string"
+                },
+                "password_changed_at": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
                 }
             }
         }
