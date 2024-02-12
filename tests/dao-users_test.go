@@ -31,10 +31,10 @@ func TestCreateUser(t *testing.T) {
 func TestPassword(t *testing.T) {
 	password := "secret123"
 	wrongPassword := "nosecret123"
-	hasedPassword, err := dao.HashPassword(password)
+	hashedPassword, err := dao.HashPassword(password)
 	require.NoError(t, err)
 
-	err = dao.CheckPassword(hasedPassword, password)
+	err = dao.CheckPassword(hashedPassword, password)
 	require.NoError(t, err)
 	require.NotEmpty(t, hasedPassword)
 
