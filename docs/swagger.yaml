@@ -31,6 +31,19 @@ definitions:
     - password
     - username
     type: object
+  api.createUserResponse:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      full_name:
+        type: string
+      password_changed_at:
+        type: string
+      username:
+        type: string
+    type: object
   api.transferRequest:
     properties:
       amount:
@@ -75,21 +88,6 @@ definitions:
         type: integer
       to_account_id:
         type: integer
-    type: object
-  dao.User:
-    properties:
-      created_at:
-        type: string
-      email:
-        type: string
-      full_name:
-        type: string
-      hashed_password:
-        type: string
-      password_changed_at:
-        type: string
-      username:
-        type: string
     type: object
 info:
   contact: {}
@@ -186,7 +184,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dao.User'
+            $ref: '#/definitions/api.createUserResponse'
       summary: create user
       tags:
       - users
