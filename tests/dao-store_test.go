@@ -13,16 +13,34 @@ func TestTransferTx(t *testing.T) {
 	// existed := make(map[int]bool)
 	store := dao.NewStore(testDB)
 
-	account1, _ := testQueries.CreateAccount(context.Background(),
+	user1, err := createUser(dao.CreateUserParams{
+		Username:       "test3",
+		FullName:       "test three",
+		Email:          "test3@test.com",
+		HashedPassword: "secret",
+	})
+	require.NoError(t, err)
+
+	user2, err := createUser(dao.CreateUserParams{
+		Username:       "test4",
+		FullName:       "test four",
+		Email:          "test4@test.com",
+		HashedPassword: "secret",
+	})
+	require.NoError(t, err)
+
+	account1, _ := testQueries.CreateAccount(
+		context.Background(),
 		dao.CreateAccountParams{
-			Owner:    "Liusha",
+			Owner:    user1.Username,
 			Balance:  20000.00,
 			Currency: "GBP",
 		},
 	)
-	account2, _ := testQueries.CreateAccount(context.Background(),
+	account2, _ := testQueries.CreateAccount(
+		context.Background(),
 		dao.CreateAccountParams{
-			Owner:    "degere",
+			Owner:    user2.Username,
 			Balance:  10000.00,
 			Currency: "GBP",
 		},
@@ -113,16 +131,34 @@ func TestTransferTxDeadLock(t *testing.T) {
 	// existed := make(map[int]bool)
 	store := dao.NewStore(testDB)
 
-	account1, _ := testQueries.CreateAccount(context.Background(),
+	user1, err := createUser(dao.CreateUserParams{
+		Username:       "test5",
+		FullName:       "test five",
+		Email:          "test5@test.com",
+		HashedPassword: "secret",
+	})
+	require.NoError(t, err)
+
+	user2, err := createUser(dao.CreateUserParams{
+		Username:       "test6",
+		FullName:       "test six",
+		Email:          "test6@test.com",
+		HashedPassword: "secret",
+	})
+	require.NoError(t, err)
+
+	account1, _ := testQueries.CreateAccount(
+		context.Background(),
 		dao.CreateAccountParams{
-			Owner:    "Liusha",
+			Owner:    user1.Username,
 			Balance:  20000.00,
 			Currency: "GBP",
 		},
 	)
-	account2, _ := testQueries.CreateAccount(context.Background(),
+	account2, _ := testQueries.CreateAccount(
+		context.Background(),
 		dao.CreateAccountParams{
-			Owner:    "degere",
+			Owner:    user2.Username,
 			Balance:  10000.00,
 			Currency: "GBP",
 		},
