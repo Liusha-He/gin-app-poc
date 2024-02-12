@@ -36,8 +36,8 @@ func TestPassword(t *testing.T) {
 
 	err = dao.CheckPassword(hashedPassword, password)
 	require.NoError(t, err)
-	require.NotEmpty(t, hasedPassword)
+	require.NotEmpty(t, hashedPassword)
 
-	err = dao.CheckPassword(hasedPassword, wrongPassword)
+	err = dao.CheckPassword(hashedPassword, wrongPassword)
 	require.EqualError(t, err, bcrypt.ErrMismatchedHashAndPassword.Error())
 }
