@@ -26,11 +26,11 @@ type listAccountsRequest struct {
 // @Summary 		create account
 // @Schemes 		http
 // @Description 	Takes an account json and store in DB, Returned saved json.
-// @Tags 			accounts
+// @Tags 			services
 // @Produce 		json
 // @Param 			account  body	createAccountRequest true  "account json"
 // @Success 		200 {object} dao.Account
-// @Router 			/api/v1/accounts [post]
+// @Router 			/api/v1/services/accounts [post]
 func (server *Server) createAccount(ctx *gin.Context) {
 	var req createAccountRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -64,11 +64,11 @@ func (server *Server) createAccount(ctx *gin.Context) {
 // @Summary 		get account by id
 // @Schemes 		http
 // @Description 	Takes an account id with path, Returned account info json.
-// @Tags 			accounts
+// @Tags 			services
 // @Produce 		json
 // @Param 			id path string true "search by id"
 // @Success 		200	{object} dao.Account
-// @Router 			/api/v1/accounts/{id} [get]
+// @Router 			/api/v1/services/accounts/{id} [get]
 func (server *Server) getAccount(ctx *gin.Context) {
 	var req getAccountRequest
 	if err := ctx.ShouldBindUri(&req); err != nil {
@@ -88,10 +88,10 @@ func (server *Server) getAccount(ctx *gin.Context) {
 // @Summary 		Get account list
 // @Schemes 		http
 // @Description		Responds with the list of accounts
-// @Tags 			accounts
+// @Tags 			services
 // @Produce 		json
 // @Success 		200	{array} dao.Account
-// @Router 			/api/v1/accounts [get]
+// @Router 			/api/v1/services/accounts [get]
 func (server *Server) listAccounts(ctx *gin.Context) {
 	var req listAccountsRequest
 	if err := ctx.ShouldBindQuery(&req); err != nil {

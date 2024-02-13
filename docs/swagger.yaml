@@ -113,7 +113,7 @@ info:
   title: simple bank API
   version: "1.0"
 paths:
-  /api/v1/accounts:
+  /api/v1/services/accounts:
     get:
       description: Responds with the list of accounts
       produces:
@@ -127,7 +127,7 @@ paths:
             type: array
       summary: Get account list
       tags:
-      - accounts
+      - services
     post:
       description: Takes an account json and store in DB, Returned saved json.
       parameters:
@@ -146,8 +146,8 @@ paths:
             $ref: '#/definitions/dao.Account'
       summary: create account
       tags:
-      - accounts
-  /api/v1/accounts/{id}:
+      - services
+  /api/v1/services/accounts/{id}:
     get:
       description: Takes an account id with path, Returned account info json.
       parameters:
@@ -165,8 +165,8 @@ paths:
             $ref: '#/definitions/dao.Account'
       summary: get account by id
       tags:
-      - accounts
-  /api/v1/transfers:
+      - services
+  /api/v1/services/transfers:
     post:
       description: Takes an transfer json and store in DB, Returned saved json.
       parameters:
@@ -185,7 +185,7 @@ paths:
             $ref: '#/definitions/dao.Transfer'
       summary: create transfer
       tags:
-      - transfers
+      - services
   /api/v1/users:
     post:
       description: Takes an user json and store in DB, Returned saved json.

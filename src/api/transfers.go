@@ -35,11 +35,11 @@ func (server *Server) validateAccount(ctx *gin.Context, accountID int64, currenc
 // @Summary 		create transfer
 // @Schemes 		http
 // @Description 	Takes an transfer json and store in DB, Returned saved json.
-// @Tags 			transfers
+// @Tags 			services
 // @Produce 		json
 // @Param 			transfer  body	transferRequest true  "transfer json"
 // @Success 		200 {object} dao.Transfer
-// @Router 			/api/v1/transfers [post]
+// @Router 			/api/v1/services/transfers [post]
 func (server *Server) createTransfer(ctx *gin.Context) {
 	var req transferRequest
 	if err := ctx.ShouldBindJSON(req); err != nil {

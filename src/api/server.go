@@ -54,8 +54,12 @@ func NewServer(config Config, store dao.Store) (*Server, error) {
 
 	// Register all routers below
 	server.UsersRouter(v1)
-	server.AccountsRouters(v1)
-	server.TransfersRouters(v1)
+
+	authorized := v1.Group("/services")
+	authorized.Use(authMiddleware(server.tokenMaker))
+
+	server.AccountsRouters(authorized)
+	server.TransfersRouters(authorized)
 
 	server.Router = router
 	return server, nil

@@ -15,14 +15,14 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/v1/accounts": {
+        "/api/v1/services/accounts": {
             "get": {
                 "description": "Responds with the list of accounts",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "accounts"
+                    "services"
                 ],
                 "summary": "Get account list",
                 "responses": {
@@ -43,7 +43,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "accounts"
+                    "services"
                 ],
                 "summary": "create account",
                 "parameters": [
@@ -67,14 +67,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/accounts/{id}": {
+        "/api/v1/services/accounts/{id}": {
             "get": {
                 "description": "Takes an account id with path, Returned account info json.",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "accounts"
+                    "services"
                 ],
                 "summary": "get account by id",
                 "parameters": [
@@ -96,14 +96,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/transfers": {
+        "/api/v1/services/transfers": {
             "post": {
                 "description": "Takes an transfer json and store in DB, Returned saved json.",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "transfers"
+                    "services"
                 ],
                 "summary": "create transfer",
                 "parameters": [
