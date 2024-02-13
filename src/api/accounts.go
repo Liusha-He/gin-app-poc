@@ -1,7 +1,9 @@
 package api
 
 import (
+	"errors"
 	"net/http"
+	"simple-bank/src/auth"
 	"simple-bank/src/dao"
 
 	"github.com/gin-gonic/gin"
@@ -38,8 +40,9 @@ func (server *Server) createAccount(ctx *gin.Context) {
 		return
 	}
 
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*auth.Payload)
 	arg := dao.CreateAccountParams{
-		Owner:    req.Owner,
+		Owner:    authPayload.Username,
 		Currency: req.Currency,
 		Balance:  0.00,
 	}
@@ -81,13 +84,20 @@ func (server *Server) getAccount(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
+
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*auth.Payload)
+	if account.Owner != authPayload.Username {
+		err := errors.New("account doesn't belong to authenticated user")
+		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+		return
+	}
 	ctx.JSON(http.StatusOK, account)
 }
 
 // ListAccounts godoc
 // @Summary 		Get account list
 // @Schemes 		http
-// @Description		Responds with the list of accounts
+// @Description		Responds with the list of accounts belong to the authenticated user.
 // @Tags 			services
 // @Produce 		json
 // @Success 		200	{array} dao.Account
@@ -99,7 +109,9 @@ func (server *Server) listAccounts(ctx *gin.Context) {
 		return
 	}
 
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*auth.Payload)
 	arg := dao.ListAccountsParams{
+		Owner:  authPayload.Username,
 		Limit:  req.PageSize,
 		Offset: (req.PageID - 1) * req.PageSize,
 	}
