@@ -21,13 +21,13 @@ func (server *Server) validateAccount(ctx *gin.Context, accountID int64, currenc
 	account, err := server.store.GetAccount(ctx, accountID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return nil, false
+		return account, false
 	}
 
 	if account.Currency != currency {
 		err = fmt.Errorf("Account [%d] currency mismatch: expected %s, but got %s", accountID, account.Currency, currency)
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return nil, false
+		return account, false
 	}
 
 	return account, true
