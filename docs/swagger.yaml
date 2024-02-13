@@ -31,18 +31,23 @@ definitions:
     - password
     - username
     type: object
-  api.createUserResponse:
+  api.loginRequest:
     properties:
-      created_at:
-        type: string
-      email:
-        type: string
-      full_name:
-        type: string
-      password_changed_at:
+      password:
+        minLength: 6
         type: string
       username:
         type: string
+    required:
+    - password
+    - username
+    type: object
+  api.loginResponse:
+    properties:
+      access_token:
+        type: string
+      user:
+        $ref: '#/definitions/api.userResponse'
     type: object
   api.transferRequest:
     properties:
@@ -62,6 +67,19 @@ definitions:
     - currency
     - from_account_id
     - to_account_id
+    type: object
+  api.userResponse:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      full_name:
+        type: string
+      password_changed_at:
+        type: string
+      username:
+        type: string
     type: object
   dao.Account:
     properties:
@@ -184,8 +202,28 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/api.createUserResponse'
+            $ref: '#/definitions/api.userResponse'
       summary: create user
+      tags:
+      - users
+  /api/v1/users/login:
+    post:
+      description: Takes an login user json and store in DB, Returned saved json.
+      parameters:
+      - description: login json
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/api.loginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.loginResponse'
+      summary: login
       tags:
       - users
 swagger: "2.0"

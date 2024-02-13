@@ -4,6 +4,7 @@ import "github.com/gin-gonic/gin"
 
 func (server *Server) UsersRouter(r *gin.RouterGroup) {
 	r.POST("/users", server.createUser)
+	r.POST("/users/login", server.login)
 }
 
 func (server *Server) AccountsRouters(r *gin.RouterGroup) {
