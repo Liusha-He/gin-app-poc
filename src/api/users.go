@@ -74,3 +74,5 @@ func (server *Server) createUser(ctx *gin.Context) {
 		PasswordChangedAt: user.PasswordChangedAt,
 	})
 }
+
+func (server *Server) login(ctx *gin.Context) {}

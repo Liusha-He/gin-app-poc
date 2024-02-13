@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
-	"simple-bank/src/api"
 	"simple-bank/src/dao"
 	mockdb "simple-bank/tests/mock"
 	"testing"
@@ -30,7 +29,9 @@ func TestGetAccountAPI(t *testing.T) {
 		Times(1).
 		Return(account, nil)
 
-	server := api.NewServer(store)
+	server, err := NewTestServer(store)
+	require.NoError(t, err)
+
 	recorder := httptest.NewRecorder()
 
 	url := fmt.Sprintf("/api/v1/accounts/%d", account.ID)

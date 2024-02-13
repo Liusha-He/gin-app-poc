@@ -1,7 +1,10 @@
 package api
 
 import (
+	"fmt"
+	"simple-bank/src/auth"
 	"simple-bank/src/dao"
+	"time"
 
 	docs "simple-bank/docs"
 
@@ -12,14 +15,30 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+type Config struct {
+	TokenSymmetricKey   string
+	AccessTokenDuration time.Duration
+}
+
 type Server struct {
-	store  dao.Store
-	Router *gin.Engine
+	store      dao.Store
+	tokenMaker auth.Maker
+	Router     *gin.Engine
+	config     Config
 }
 
 // NewServer will create the http Server
-func NewServer(store dao.Store) *Server {
-	server := &Server{store: store}
+func NewServer(config Config, store dao.Store) (*Server, error) {
+	tokenMaker, err := auth.NewPASETOMaker(config.TokenSymmetricKey)
+	if err != nil {
+		return nil, fmt.Errorf("unable to generate token: %s", err)
+	}
+	server := &Server{
+		store:      store,
+		tokenMaker: tokenMaker,
+		config:     config,
+	}
+
 	router := gin.Default()
 
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
@@ -39,7 +58,7 @@ func NewServer(store dao.Store) *Server {
 	server.TransfersRouters(v1)
 
 	server.Router = router
-	return server
+	return server, nil
 }
 
 func errorResponse(err error) gin.H {
