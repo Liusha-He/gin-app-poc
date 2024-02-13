@@ -9,14 +9,25 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func createAccount(t *testing.T) dao.Account {
+func createAccount(arg dao.CreateAccountParams) (dao.Account, error) {
+	return testQueries.CreateAccount(context.Background(), arg)
+}
+
+func TestCreateAccount(t *testing.T) {
+	user, err := createUser(dao.CreateUserParams{
+		Username:       "test1",
+		HashedPassword: "secret",
+		Email:          "test1@test.org",
+		FullName:       "test one",
+	})
+
 	arg := dao.CreateAccountParams{
-		Owner:    "Liusha",
-		Balance:  100.00,
+		Owner:    user.Username,
+		Balance:  1500.00,
 		Currency: "USD",
 	}
 
-	account, err := testQueries.CreateAccount(context.Background(), arg)
+	account, err := createAccount(arg)
 
 	require.NoError(t, err)
 	require.NotEmpty(t, account)
@@ -25,16 +36,25 @@ func createAccount(t *testing.T) dao.Account {
 	require.Equal(t, arg.Currency, account.Currency)
 	require.NotZero(t, account.ID)
 	require.NotZero(t, account.CreatedAt)
-
-	return account
-}
-
-func TestCreateAccount(t *testing.T) {
-	createAccount(t)
 }
 
 func TestGetAccount(t *testing.T) {
-	account1 := createAccount(t)
+	user, err := createUser(dao.CreateUserParams{
+		Username:       "test2",
+		HashedPassword: "secret",
+		Email:          "test2@test.org",
+		FullName:       "test two",
+	})
+
+	arg := dao.CreateAccountParams{
+		Owner:    user.Username,
+		Balance:  1500.00,
+		Currency: "GBP",
+	}
+
+	account1, err := createAccount(arg)
+
+	require.NoError(t, err)
 
 	account2, err := testQueries.GetAccount(context.Background(), account1.ID)
 

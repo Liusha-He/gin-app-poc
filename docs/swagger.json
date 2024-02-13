@@ -7,14 +7,14 @@
         "version": "1.0"
     },
     "paths": {
-        "/api/v1/accounts": {
+        "/api/v1/services/accounts": {
             "get": {
                 "description": "Responds with the list of accounts",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "accounts"
+                    "services"
                 ],
                 "summary": "Get account list",
                 "responses": {
@@ -35,7 +35,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "accounts"
+                    "services"
                 ],
                 "summary": "create account",
                 "parameters": [
@@ -59,14 +59,14 @@
                 }
             }
         },
-        "/api/v1/accounts/{id}": {
+        "/api/v1/services/accounts/{id}": {
             "get": {
                 "description": "Takes an account id with path, Returned account info json.",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "accounts"
+                    "services"
                 ],
                 "summary": "get account by id",
                 "parameters": [
@@ -88,14 +88,14 @@
                 }
             }
         },
-        "/api/v1/transfers": {
+        "/api/v1/services/transfers": {
             "post": {
                 "description": "Takes an transfer json and store in DB, Returned saved json.",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "transfers"
+                    "services"
                 ],
                 "summary": "create transfer",
                 "parameters": [
@@ -114,6 +114,68 @@
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/dao.Transfer"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/users": {
+            "post": {
+                "description": "Takes an user json and store in DB, Returned saved json.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "create user",
+                "parameters": [
+                    {
+                        "description": "user json",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.createUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.userResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/users/login": {
+            "post": {
+                "description": "Takes an login user json and store in DB, Returned saved json.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "login",
+                "parameters": [
+                    {
+                        "description": "login json",
+                        "name": "login",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.loginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.loginResponse"
                         }
                     }
                 }
@@ -142,6 +204,57 @@
                 }
             }
         },
+        "api.createUserRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "full_name",
+                "password",
+                "username"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "full_name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 6
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.loginRequest": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "minLength": 6
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.loginResponse": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/api.userResponse"
+                }
+            }
+        },
         "api.transferRequest": {
             "type": "object",
             "required": [
@@ -165,6 +278,26 @@
                 "to_account_id": {
                     "type": "integer",
                     "minimum": 1
+                }
+            }
+        },
+        "api.userResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "full_name": {
+                    "type": "string"
+                },
+                "password_changed_at": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
                 }
             }
         },

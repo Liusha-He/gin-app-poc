@@ -17,10 +17,20 @@ migrate-up:
 	 -database "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable" \
 	 -verbose up
 
+migrate-up-1:
+	migrate -path db/migration \
+	 -database "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable" \
+	 -verbose up 1
+
 migrate-down:
 	migrate -path db/migration \
 	 -database "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable" \
 	 -verbose down
+
+migrate-down-1:
+	migrate -path db/migration \
+	 -database "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable" \
+	 -verbose down 1
 
 sqlc:
 	sqlc generate
@@ -34,10 +44,10 @@ clean:
 docs: 
 	swag init --dir ./src/
 
-server:
+server: docs
 	go run src/main.go
 
 mock:
 	mockgen -package mockdb -destination tests/mock/store.go simple-bank/src/dao Store
 
-.PHONY: postgres createdb dropdb migrate-up migrate-down sqlc test clean docs mock
+.PHONY: postgres createdb dropdb migrate-up migrate-down sqlc test clean docs mock migrate-up-1 migrate-down-1

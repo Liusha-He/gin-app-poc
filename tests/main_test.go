@@ -4,8 +4,10 @@ import (
 	"database/sql"
 	"log"
 	"os"
+	"simple-bank/src/api"
 	"simple-bank/src/dao"
 	"testing"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/lib/pq"
@@ -20,6 +22,15 @@ var (
 	testQueries *dao.Queries
 	testDB      *sql.DB
 )
+
+func NewTestServer(store dao.Store) (*api.Server, error) {
+	config := api.Config{
+		TokenSymmetricKey:   "12345678912345678912345678912345",
+		AccessTokenDuration: time.Minute,
+	}
+
+	return api.NewServer(config, store)
+}
 
 func TestMain(m *testing.M) {
 	gin.SetMode(gin.TestMode)

@@ -5,6 +5,7 @@ import (
 	"log"
 	"simple-bank/src/api"
 	"simple-bank/src/dao"
+	"time"
 
 	_ "github.com/lib/pq"
 )
@@ -25,7 +26,18 @@ func main() {
 	}
 
 	store := dao.NewStore(conn)
-	server := api.NewServer(store)
+
+	// todo - update the tokensymmetrickey for production (dev for now)
+	config := api.Config{
+		TokenSymmetricKey:   "12345678912345678912345678912345",
+		AccessTokenDuration: 15 * time.Minute,
+	}
+
+	server, err := api.NewServer(config, store)
+
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	err = server.Start(address)
 	if err != nil {
