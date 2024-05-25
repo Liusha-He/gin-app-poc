@@ -1,10 +1,13 @@
 package api
 
 import (
+	"errors"
 	"net/http"
+	"simple-bank/src/auth"
 	"simple-bank/src/dao"
 
 	"github.com/gin-gonic/gin"
+	"github.com/lib/pq"
 )
 
 type createAccountRequest struct {
@@ -25,11 +28,11 @@ type listAccountsRequest struct {
 // @Summary 		create account
 // @Schemes 		http
 // @Description 	Takes an account json and store in DB, Returned saved json.
-// @Tags 			accounts
+// @Tags 			services
 // @Produce 		json
 // @Param 			account  body	createAccountRequest true  "account json"
 // @Success 		200 {object} dao.Account
-// @Router 			/api/v1/accounts [post]
+// @Router 			/api/v1/services/accounts [post]
 func (server *Server) createAccount(ctx *gin.Context) {
 	var req createAccountRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -37,14 +40,22 @@ func (server *Server) createAccount(ctx *gin.Context) {
 		return
 	}
 
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*auth.Payload)
 	arg := dao.CreateAccountParams{
-		Owner:    req.Owner,
+		Owner:    authPayload.Username,
 		Currency: req.Currency,
 		Balance:  0.00,
 	}
 
 	account, err := server.store.CreateAccount(ctx, arg)
 	if err != nil {
+		if pqErr, ok := err.(*pq.Error); ok {
+			switch pqErr.Code.Name() {
+			case "foreign_key_violation", "unique_violation":
+				ctx.JSON(http.StatusForbidden, errorResponse(err))
+				return
+			}
+		}
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
@@ -56,11 +67,11 @@ func (server *Server) createAccount(ctx *gin.Context) {
 // @Summary 		get account by id
 // @Schemes 		http
 // @Description 	Takes an account id with path, Returned account info json.
-// @Tags 			accounts
+// @Tags 			services
 // @Produce 		json
 // @Param 			id path string true "search by id"
 // @Success 		200	{object} dao.Account
-// @Router 			/api/v1/accounts/{id} [get]
+// @Router 			/api/v1/services/accounts/{id} [get]
 func (server *Server) getAccount(ctx *gin.Context) {
 	var req getAccountRequest
 	if err := ctx.ShouldBindUri(&req); err != nil {
@@ -73,17 +84,24 @@ func (server *Server) getAccount(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
+
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*auth.Payload)
+	if account.Owner != authPayload.Username {
+		err := errors.New("account doesn't belong to authenticated user")
+		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+		return
+	}
 	ctx.JSON(http.StatusOK, account)
 }
 
 // ListAccounts godoc
 // @Summary 		Get account list
 // @Schemes 		http
-// @Description		Responds with the list of accounts
-// @Tags 			accounts
+// @Description		Responds with the list of accounts belong to the authenticated user.
+// @Tags 			services
 // @Produce 		json
 // @Success 		200	{array} dao.Account
-// @Router 			/api/v1/accounts [get]
+// @Router 			/api/v1/services/accounts [get]
 func (server *Server) listAccounts(ctx *gin.Context) {
 	var req listAccountsRequest
 	if err := ctx.ShouldBindQuery(&req); err != nil {
@@ -91,7 +109,9 @@ func (server *Server) listAccounts(ctx *gin.Context) {
 		return
 	}
 
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*auth.Payload)
 	arg := dao.ListAccountsParams{
+		Owner:  authPayload.Username,
 		Limit:  req.PageSize,
 		Offset: (req.PageID - 1) * req.PageSize,
 	}
